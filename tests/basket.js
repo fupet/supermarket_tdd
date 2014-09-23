@@ -7,25 +7,32 @@ var assert = require('chai').assert,
 suite('test Basket', function() {
 	var createProductMock = function(){
 		return sinon.mock(Product);
-	},
-	basket = new Basket();
-
+	};
 
 	test('test if basket empty after init', function(){
-		assert.typeOf(basket.products, 'array', 'products array not exists');
-		assert.lengthOf(basket.products, 0, 'products array is not empty');
+		var basket = new Basket();
+		assert.typeOf(basket.products, 'object', 'basket not exists');
+		assert.equal(basket.countProducts(), 0, 'products array is not empty');
 	});
 
 	test('test if we can add product', function() {
-		var customProduct = createProductMock();
-
+		var customProduct = createProductMock(),
+			basket = new Basket();
 		basket.addProductWithAmount(customProduct, 10);
-		assert.lengthOf(basket.products, 1, 'products array length is not ok');
-
+		assert.equal(basket.countProducts(), 1, 'products array length is not ok');
 	});
 
-	suite('test with dataProvider', function(){
+	test('add one product twice', function(){
+		var customProduct = createProductMock(),
+			basket = new Basket();
+		basket.addProductWithAmount(customProduct, 10);
+		basket.addProductWithAmount(customProduct, 5);
+		assert.equal(basket.countProducts(), 1, 'only one kind of product should be in the basket');
+	});
+
+	suite('test amount with invalid data', function(){
 		var testProduct = createProductMock(),
+			basket = new Basket(),
 			invalidAmountDataProvider = [
 				[testProduct, ''],
 				[testProduct, true],
@@ -42,8 +49,9 @@ suite('test Basket', function() {
 					basket.addProductWithAmount(dataItem[0], dataItem[1]);
 				}
 				catch(e) {
-					assert.fail(dataItem[1], 'natural number',  '' + e);
+					return;
 				}
+				assert.fail(false, 'natural number test fail');
 			});
 		});
 	});

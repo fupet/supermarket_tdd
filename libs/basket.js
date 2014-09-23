@@ -8,7 +8,7 @@ var Basket = function() {
 	 * Products added
 	 * @type {Array}
 	 */
-	this.products = [];
+	this.products = {};
 };
 
 /**
@@ -25,7 +25,16 @@ Basket.prototype.addProductWithAmount = function(product, amount) {
 		throw new Error('Invalid amount!');
 	}
 
-	this.products.push([product, amount]);
+	if(product in this.products) {
+		this.products[product] += amount;
+	}
+	else {
+		this.products[product] = amount;
+	}
+};
+
+Basket.prototype.countProducts = function(){
+	return Object.keys(this.products).length;
 };
 
 Basket.isInt = function(n){
